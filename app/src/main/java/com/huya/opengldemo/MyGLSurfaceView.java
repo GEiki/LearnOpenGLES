@@ -20,9 +20,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private Handler handler;
     private Icosahedron mIcosahedron;
     static float triangleCoords[] = { //顶点坐标
-            0.0f,0.5f,0.0f,
-            -0.5f,-0.5f,0.0f,
-            0.5f,-0.5f,0.0f,
+            0.5f,  0.5f ,   // top left
+            -0.5f,  0.5f  , // top right
+            0.5f, -0.5f  , // bottom right
+            -0.5f, -0.5f
     };
     float color[] = {255,0,0,1.0f};//R,G,B,透明度
     private final float[] mProjectionMatrix = new float[16];

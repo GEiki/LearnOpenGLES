@@ -30,27 +30,24 @@ public class Triangle {
 
     private FloatBuffer vertexBuffer; //顶点坐标buffer
 
-    static final int COORDS_PER_VERTEX = 3;//每个顶点的坐标数
+    static final int COORDS_PER_VERTEX = 2;//每个顶点的坐标数
 
-    static float triangleCoords[] = { //顶点坐标
-            0.0f,0.5f,0.0f,
-            -0.5f,-0.5f,0.0f,
-            0.5f,-0.5f,0.0f,
-    };
+    static float triangleCoords[];
     private float[] matrix;
     private int hMatrix;
 
-    float color[] = {255,0,0,1.0f};//R,G,B,透明度
+    float[] color = {255,0,0,1.0f};//R,G,B,透明度
 
     private int colorHandle;
     private int positionHandle;
 
-    private final int vertexCount = triangleCoords.length/COORDS_PER_VERTEX;//顶点数
+    private  int vertexCount ;//顶点数
     private final int vertexStride = COORDS_PER_VERTEX * 4;//顶点步幅 float为4字节
 
     public Triangle(float[] coords,float[] colors) {
         triangleCoords = coords;
         this.color = colors;
+        vertexCount =  triangleCoords.length/COORDS_PER_VERTEX;
 
         //将坐标转换为floatBuffer
         vertexBuffer = Util.getFloatBuffer(triangleCoords);
@@ -86,8 +83,7 @@ public class Triangle {
                 vertexBuffer);// 6. 数据缓冲区
         GLES20.glUniform4fv(colorHandle,1,color,0);//设置颜色
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES,0,vertexCount);//绘制三角形
-
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,vertexCount);//绘制三角形
         GLES20.glDisableVertexAttribArray(positionHandle);//禁用位置句柄
         GLES20.glDisableVertexAttribArray(colorHandle);//禁用颜色句柄
 
