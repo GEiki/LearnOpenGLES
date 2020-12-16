@@ -2,14 +2,11 @@ package com.huya.opengldemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import com.huya.opengldemo.shape.Triangle;
 
 
 public class MainActivity extends AppCompatActivity {

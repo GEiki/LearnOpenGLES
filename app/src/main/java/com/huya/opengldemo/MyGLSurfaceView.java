@@ -7,6 +7,9 @@ import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.SystemClock;
 
+import com.huya.opengldemo.shape.Circle;
+import com.huya.opengldemo.shape.Triangle;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -16,6 +19,7 @@ import javax.microedition.khronos.opengles.GL10;
  **/
 public class MyGLSurfaceView extends GLSurfaceView {
     private Triangle mTriangle;
+    private Circle mCircle;
     private float angle = 0.0f;
     private Handler handler;
     private Icosahedron mIcosahedron;
@@ -39,7 +43,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
             @Override
             public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
                 GLES20.glClearColor(0.0f,0.0f,0.0f,0.0f);
-                mTriangle = new Triangle(triangleCoords,color);
+//                mTriangle = new Triangle(triangleCoords,color);
+                mCircle = new Circle(0.6f,0.0f,0.0f);
 
             }
 
@@ -53,21 +58,26 @@ public class MyGLSurfaceView extends GLSurfaceView {
             @Override
             public void onDrawFrame(GL10 gl10) {
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT| GLES20.GL_DEPTH_BUFFER_BIT);
-                long time = SystemClock.uptimeMillis() % 4000L;
-                float angle = 0.090f * ((int) time);
-                // Set the camera position (View matrix)
-                Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
-                // Calculate the projection and view transformation
-                Matrix.multiplyMM(mMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-                Matrix.setRotateM(mRotationMatrix, 0, angle, 0, 0, -1.0f);
-                Matrix.multiplyMM(mMatrix, 0, mMatrix, 0, mRotationMatrix, 0);
-                mTriangle.setMatrix(mMatrix);
-                mTriangle.onDraw();
+//                drawTriangle();
+                mCircle.onDraw();
 
             }
         });
 //        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    }
+
+    private void drawTriangle() {
+        long time = SystemClock.uptimeMillis() % 4000L;
+        float angle = 0.090f * ((int) time);
+        // Set the camera position (View matrix)
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(mMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.setRotateM(mRotationMatrix, 0, angle, 0, 0, -1.0f);
+        Matrix.multiplyMM(mMatrix, 0, mMatrix, 0, mRotationMatrix, 0);
+        mTriangle.setMatrix(mMatrix);
+        mTriangle.onDraw();
     }
 
 }

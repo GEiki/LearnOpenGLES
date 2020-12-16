@@ -1,40 +1,36 @@
-package com.huya.opengldemo;
+package com.huya.opengldemo.shape;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
+import android.util.Log;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import com.huya.opengldemo.Util;
+
 import java.nio.FloatBuffer;
-
 
 /**
  * author:guoyiqu
- * date:2019/9/18
+ * date:2020/12/16
  **/
-public class Triangle {
+public class Circle {
+    private static final String TAG = "Circle";
+
     private final int mProgram;
 
     private final String vertexShaderCode = //顶点着色器代码
-            "uniform mat4 vMatrix;"+
-            "attribute vec4 vPosition;"+
-            "void main(){"+
-            "gl_Position = vMatrix * vPosition;"+
-            "}";
+                    "attribute vec4 vPosition;"+
+                    "void main(){"+
+                    "gl_Position =vPosition;"+
+                    "}";
     private final String fragmentShaderCode =//片段着色器代码
             "precision mediump float;" +
-            "uniform vec4 vColor;" +
-            "void main(){"+
-            "gl_FragColor = vColor;" +
-            "}";
+                    "uniform vec4 vColor;" +
+                    "void main(){"+
+                    "gl_FragColor = vColor;" +
+                    "}";
 
     private FloatBuffer vertexBuffer; //顶点坐标buffer
 
     static final int COORDS_PER_VERTEX = 2;//每个顶点的坐标数
-
-    static float triangleCoords[];
-    private float[] matrix;
-    private int hMatrix;
 
     float[] color = {255,0,0,1.0f};//R,G,B,透明度
 
@@ -44,13 +40,15 @@ public class Triangle {
     private  int vertexCount ;//顶点数
     private final int vertexStride = COORDS_PER_VERTEX * 4;//顶点步幅 float为4字节
 
-    public Triangle(float[] coords,float[] colors) {
-        triangleCoords = coords;
-        this.color = colors;
-        vertexCount =  triangleCoords.length/COORDS_PER_VERTEX;
+    private static final int CIRCLE_SEGMENT = 50;
+
+    public Circle(float r,float x , float y) {
+        float[] circleCoords = getCirclePositions(r,x,y);
+
+        vertexCount =  circleCoords.length/COORDS_PER_VERTEX;
 
         //将坐标转换为floatBuffer
-        vertexBuffer = Util.getFloatBuffer(triangleCoords);
+        vertexBuffer = Util.getFloatBuffer(circleCoords);
 
         int vertexShader = Util.loadShader(GLES20.GL_VERTEX_SHADER,vertexShaderCode);//加载顶点着色器
         int fragmentShader = Util.loadShader(GLES20.GL_FRAGMENT_SHADER,fragmentShaderCode);//加载片段着色器
@@ -58,22 +56,29 @@ public class Triangle {
         GLES20.glAttachShader(mProgram,vertexShader);//连接顶点着色器
         GLES20.glAttachShader(mProgram,fragmentShader);//连接片段着色器
         GLES20.glLinkProgram(mProgram);//创建openGL es可执行文件
-        hMatrix = GLES20.glGetUniformLocation(mProgram,"vMatrix");
         positionHandle = GLES20.glGetAttribLocation(mProgram,"vPosition");//获取位置句柄
         colorHandle = GLES20.glGetUniformLocation(mProgram,"vColor");//获取颜色句柄
+    }
 
-
-
-
+    private float[] getCirclePositions(float r,float x,float y) {
+        int nodeCount = CIRCLE_SEGMENT + 2;
+        float[] posArrays = new float[nodeCount * COORDS_PER_VERTEX];
+        int offset = 0;
+        posArrays[offset++] = x;
+        posArrays[offset++] = y;
+        for (int i = 0; i<CIRCLE_SEGMENT+1;i++) {
+            float angleInRadians = ((float)i/(float)CIRCLE_SEGMENT) * ((float)Math.PI*2f);
+            posArrays[offset++] = x + r * (float)Math.sin(angleInRadians);
+            posArrays[offset++] = y + r * (float)Math.cos(angleInRadians);
+        }
+        return posArrays;
     }
 
     public void onDraw() {
         GLES20.glUseProgram(mProgram);//加载opengl es 程序
 
         GLES20.glEnableVertexAttribArray(positionHandle);//启用位置句柄
-        if(matrix!=null){
-            GLES20.glUniformMatrix4fv(hMatrix,1,false,matrix,0);
-        }
+
         // 关联顶点坐标属性和缓存数据
         GLES20.glVertexAttribPointer(positionHandle, // 1. 位置索引；
                 COORDS_PER_VERTEX,// 2. 每个顶点属性需要关联的分量个数(必须为1、2、3或者4。初始值为4。)；
@@ -83,17 +88,9 @@ public class Triangle {
                 vertexBuffer);// 6. 数据缓冲区
         GLES20.glUniform4fv(colorHandle,1,color,0);//设置颜色
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,vertexCount);//绘制三角形
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN,0,vertexCount);//绘制三角形
         GLES20.glDisableVertexAttribArray(positionHandle);//禁用位置句柄
         GLES20.glDisableVertexAttribArray(colorHandle);//禁用颜色句柄
 
     }
-
-    public void setMatrix(float[] matrix) {
-        this.matrix = matrix;
-    }
-
-
-
-
 }
