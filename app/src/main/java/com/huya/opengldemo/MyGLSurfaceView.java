@@ -1,6 +1,7 @@
 package com.huya.opengldemo;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -45,6 +46,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 GLES20.glClearColor(0.0f,0.0f,0.0f,0.0f);
 //                mTriangle = new Triangle(triangleCoords,color);
                 mCircle = new Circle(0.6f,0.0f,0.0f);
+                mCircle.projectionMatrix(getWidth(),getHeight());
 
             }
 
