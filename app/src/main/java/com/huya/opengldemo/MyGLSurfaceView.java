@@ -9,7 +9,9 @@ import android.os.Handler;
 import android.os.SystemClock;
 
 import com.huya.opengldemo.shape.Circle;
+import com.huya.opengldemo.shape.Cube;
 import com.huya.opengldemo.shape.Triangle;
+import com.huya.opengldemo.utils.MatrixUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,6 +23,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class MyGLSurfaceView extends GLSurfaceView {
     private Triangle mTriangle;
     private Circle mCircle;
+    private Cube mCube;
     private float angle = 0.0f;
     private Handler handler;
     private Icosahedron mIcosahedron;
@@ -45,8 +48,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
             public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
                 GLES20.glClearColor(0.0f,0.0f,0.0f,0.0f);
 //                mTriangle = new Triangle(triangleCoords,color);
-                mCircle = new Circle(0.6f,0.0f,0.0f);
-                mCircle.projectionMatrix(getWidth(),getHeight());
+//                mCircle = new Circle(0.6f,0.0f,0.0f);
+//                mCircle.projectionMatrix(getWidth(),getHeight());
+
+                mCube = new Cube();
+                GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+                GLES20.glEnable(GLES20.GL_CULL_FACE);
 
             }
 
@@ -54,14 +61,17 @@ public class MyGLSurfaceView extends GLSurfaceView {
             public void onSurfaceChanged(GL10 gl10, int width, int height) {
                 GLES20.glViewport(0,0,width,height);
                 float ratio = (float)width/height;
-                Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+//                Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+                MatrixUtil.setProjectFrustum(-ratio,ratio,-1,1,20,100);
+                MatrixUtil.setCamera(-16f,8f,45,0f,0f,0f,0f,1.0f,0.0f);
             }
 
             @Override
             public void onDrawFrame(GL10 gl10) {
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT| GLES20.GL_DEPTH_BUFFER_BIT);
 //                drawTriangle();
-                mCircle.onDraw();
+//                mCircle.onDraw();
+                mCube.onDraw();
 
             }
         });

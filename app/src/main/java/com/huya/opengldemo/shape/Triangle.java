@@ -1,12 +1,9 @@
 package com.huya.opengldemo.shape;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
-import com.huya.opengldemo.Util;
+import com.huya.opengldemo.utils.Util;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 

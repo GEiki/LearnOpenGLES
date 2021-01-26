@@ -1,6 +1,6 @@
 package com.huya.opengldemo;
 
-import android.opengl.GLES20;
+import com.huya.opengldemo.utils.Util;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
